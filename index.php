@@ -1,4 +1,5 @@
-<?php session_start();
+<?php
+session_start();
 
 if ( !isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
     $_SESSION['auth_error'] = "Please login to access dashboard";

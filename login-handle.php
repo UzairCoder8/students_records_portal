@@ -42,7 +42,7 @@ if (password_verify($password, $usr['password'])) {
     $_SESSION['is_login'] = true;
     $_SESSION['name'] = $usr['name'];
     header("Location: student.php");
-     exit;
+    exit;
 } else {
     $_SESSION['notregister_error'] = "Username or Password is incorrect";
     header("Location: login-form.php");
