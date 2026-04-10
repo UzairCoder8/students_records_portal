@@ -70,9 +70,9 @@ session_start();
                             <i class="ri-user-heart-line text-info fs-1"></i>
                         </div>
                         <h3 class="fw-bold text-white mb-1">LOGIN</h3>
-                        <?php if (isset($_SESSION['auth_error']) && !empty($_SESSION['auth_error'])) { ?>
-                            <div class="alert alert-danger my-2 fs-6"> <?php echo $_SESSION['auth_error'];
-                                                                        unset($_SESSION['auth_error']) ?> </div>
+                        <?php if (isset($_SESSION['auth-error']) && !empty($_SESSION['auth-error'])) { ?>
+                            <div class="alert alert-danger my-2 fs-6"> <?php echo $_SESSION['auth-error'];
+                                                                        unset($_SESSION['auth-error']) ?> </div>
                         <?php } ?>
                         <p class="text-secondary small">Capture new student credentials</p>
                     </div>
@@ -82,18 +82,18 @@ session_start();
                             <input type="text" name="username" id="username" class="form-control" placeholder="Your Username">
                             <label for="username"><i class="ri-mail-line me-2"></i>Your Username</label>
 
-                            <?php if (isset($_SESSION['username_error']) && !empty($_SESSION['username_error'])) { ?>
-                                <div class="alert alert-danger my-1"> <?php echo $_SESSION['username_error'];
-                                                                        unset($_SESSION['username_error']) ?> </div>
+                            <?php if (isset($_SESSION['username-error']) && !empty($_SESSION['username-error'])) { ?>
+                                <div class="alert alert-danger my-1"> <?php echo $_SESSION['username-error'];
+                                                                        unset($_SESSION['username-error']) ?> </div>
                             <?php } ?>
                         </div>
 
                         <div class="form-floating mb-3">
                             <input type="password" name="password" id="password" class="form-control" placeholder="Your Password">
                             <label for="password"><i class="ri-smartphone-line me-2"></i>Your Password</label>
-                            <?php if (isset($_SESSION['password_error']) && !empty($_SESSION['password_error'])) { ?>
-                                <div class="alert alert-danger my-1"> <?php echo $_SESSION['password_error'];
-                                                                        unset($_SESSION['password_error']) ?> </div>
+                            <?php if (isset($_SESSION['password-error']) && !empty($_SESSION['password-error'])) { ?>
+                                <div class="alert alert-danger my-1"> <?php echo $_SESSION['password-error'];
+                                                                        unset($_SESSION['password-error']) ?> </div>
                             <?php } ?>
                         </div>
 

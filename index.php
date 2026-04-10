@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-if ( !isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
-    $_SESSION['auth_error'] = "Please login to access dashboard";
+if ( !isset($_SESSION['is-login']) || $_SESSION['is-login'] !== true) {
+    $_SESSION['auth-error'] = "Please login to access dashboard";
     header("Location: login-form.php");
     exit;
 }

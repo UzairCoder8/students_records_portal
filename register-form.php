@@ -77,9 +77,9 @@
                         <div class="form-floating mb-3">
                             <input type="text" name="name" class="form-control" id="name" placeholder="Name">
                             <label for="name"><i class="ri-user-3-line me-2"></i>Name</label>
-                            <?php if (isset($_SESSION['name_error']) && !empty($_SESSION['name_error'])) { ?>
-                                <div class="alert alert-danger my-1"> <?php echo $_SESSION['name_error'];
-                                                                        unset($_SESSION['name_error']) ?> </div>
+                            <?php if (isset($_SESSION['name-error']) && !empty($_SESSION['name-error'])) { ?>
+                                <div class="alert alert-danger my-1"> <?php echo $_SESSION['name-error'];
+                                                                        unset($_SESSION['name-error']) ?> </div>
                             <?php } ?>
                         </div>
 
@@ -87,18 +87,18 @@
                         <div class="form-floating mb-3">
                             <input type="email" name="username" class="form-control" id="email" placeholder="Email">
                             <label for="email"><i class="ri-mail-line me-2"></i>Email Address</label>
-                            <?php if (isset($_SESSION['username_error']) && !empty($_SESSION['username_error'])) { ?>
-                                <div class="alert alert-danger my-1"> <?php echo $_SESSION['username_error'];
-                                                                        unset($_SESSION['username_error']) ?> </div>
+                            <?php if (isset($_SESSION['username-error']) && !empty($_SESSION['username-error'])) { ?>
+                                <div class="alert alert-danger my-1"> <?php echo $_SESSION['username-error'];
+                                                                        unset($_SESSION['username-error']) ?> </div>
                             <?php } ?>
                         </div>
 
                         <div class="form-floating mb-3">
                             <input type="password" name="password" class="form-control" id="password" placeholder="Password">
                             <label for="password"><i class="ri-smartphone-line me-2"></i>Password</label>
-                            <?php if (isset($_SESSION['password_error']) && !empty($_SESSION['password_error'])) { ?>
-                                <div class="alert alert-danger my-1"> <?php echo $_SESSION['password_error'];
-                                                                        unset($_SESSION['password_error']) ?> </div>
+                            <?php if (isset($_SESSION['password-error']) && !empty($_SESSION['password-error'])) { ?>
+                                <div class="alert alert-danger my-1"> <?php echo $_SESSION['password-error'];
+                                                                        unset($_SESSION['password-error']) ?> </div>
                             <?php } ?>
                         </div>
 

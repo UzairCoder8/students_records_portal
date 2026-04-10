@@ -1,6 +1,6 @@
 <?php session_start();
 
-unset($_SESSION['is_login']);
+unset($_SESSION['is-login']);
 unset($_SESSION['name']);
 session_destroy();
 
