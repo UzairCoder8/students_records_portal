@@ -106,7 +106,7 @@ session_start();
 
                 <div class="text-center mt-4">
                     <a href="index.php" class="btn btn-link text-secondary text-decoration-none small">
-                        <i class="ri-layout-grid-line me-1"></i> Back to Dashboard
+                        <i class="ri-dashboard-line me-1"></i> Back to Dashboard
                     </a>
                 </div>
             </div>

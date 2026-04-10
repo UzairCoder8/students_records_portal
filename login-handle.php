@@ -1,9 +1,9 @@
 <?php session_start();
 
-// echo "<pre>";
-// print_r($_POST);
-// echo "</pre>";
-// exit;
+echo "<pre>";
+print_r($_POST);
+echo "</pre>";
+exit;
 
 
 // incude database connection
@@ -35,13 +35,13 @@ if (mysqli_num_rows($usr_result) == 0) {
 }
 
 // 2.  get registerd user
-$usr = mysqli_fetch_row($usr_result);
+$usr = mysqli_fetch_assoc($usr_result);
 
 // 3. verify password is correct
 if (password_verify($password, $usr['password'])) {
     $_SESSION['is_login'] = true;
     $_SESSION['name'] = $usr['name'];
-    header("Location: student.php");
+    header("Location: index.php");
     exit;
 } else {
     $_SESSION['notregister_error'] = "Username or Password is incorrect";

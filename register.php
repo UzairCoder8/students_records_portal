@@ -53,7 +53,7 @@ if (mysqli_num_rows($sel_result) > 0) {
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 
-$sql = "INSERT INTO users (name, username,password) VALUES ('$name', '$username', '$$hashed_password')";
+$sql = "INSERT INTO users (name, username,password) VALUES ('$name', '$username', '$hashed_password')";
 mysqli_query($con,$sql);
 header("Location: login-form.php");
 exit();
