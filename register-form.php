@@ -66,7 +66,7 @@
                 <div class="interactive-card p-4 p-md-5">
                     <div class="text-center mb-5">
                         <div class="avatar-circle mx-auto mb-3" style="width: 70px; height: 70px; background: rgba(13, 202, 240, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <i class="ri-user-add-fill fs-1"></i>
+                            <i class="ri-user-add-fill text-info fs-1"></i>
                         </div>
                         <h3 class="fw-bold text-white mb-1">Register</h3>
                         <p class="text-secondary small">Capture new student credentials</p>

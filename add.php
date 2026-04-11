@@ -13,7 +13,7 @@ if (!isset($_SESSION['is-login']) || $_SESSION['is-login'] !== true) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Add New Student | Student Management System</title>
+    <title>Add New Student</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css" rel="stylesheet" />
     <style>
@@ -281,10 +281,6 @@ if (!isset($_SESSION['is-login']) || $_SESSION['is-login'] !== true) {
 </head>
 
 <body>
-    <header>
-        <?php require "./navbar.php"; ?>
-    </header>
-
     <main class="container py-4">
         <div class="row justify-content-center">
             <div class="col-lg-6 col-md-8 col-12">
@@ -308,8 +304,7 @@ if (!isset($_SESSION['is-login']) || $_SESSION['is-login'] !== true) {
                                        name="name" 
                                        class="form-control" 
                                        id="nameInput" 
-                                       placeholder="Full Name"
-                                       value="<?php echo isset($_SESSION['old-name']) ? htmlspecialchars($_SESSION['old-name']) : ''; ?>">
+                                       placeholder="Full Name">
                                 <label for="nameInput">
                                     <i class="ri-user-3-line me-2"></i>Full Name
                                 </label>
@@ -317,8 +312,7 @@ if (!isset($_SESSION['is-login']) || $_SESSION['is-login'] !== true) {
                                     <div class="alert-custom">
                                         <i class="ri-error-warning-line me-2"></i>
                                         <?php echo htmlspecialchars($_SESSION['name-error']); 
-                                        unset($_SESSION['name-error']); 
-                                        unset($_SESSION['old-name']); ?>
+                                        unset($_SESSION['name-error']);?>
                                     </div>
                                 <?php } ?>
                             </div>
@@ -329,8 +323,7 @@ if (!isset($_SESSION['is-login']) || $_SESSION['is-login'] !== true) {
                                        name="email" 
                                        class="form-control" 
                                        id="emailInput" 
-                                       placeholder="Email Address"
-                                       value="<?php echo isset($_SESSION['old-email']) ? htmlspecialchars($_SESSION['old-email']) : ''; ?>">
+                                       placeholder="Email Address">
                                 <label for="emailInput">
                                     <i class="ri-mail-line me-2"></i>Email Address
                                 </label>
@@ -338,8 +331,7 @@ if (!isset($_SESSION['is-login']) || $_SESSION['is-login'] !== true) {
                                     <div class="alert-custom">
                                         <i class="ri-error-warning-line me-2"></i>
                                         <?php echo htmlspecialchars($_SESSION['email-error']); 
-                                        unset($_SESSION['email-error']);
-                                        unset($_SESSION['old_email']); ?>
+                                        unset($_SESSION['email-error']);?>
                                     </div>
                                 <?php } ?>
                             </div>
@@ -350,8 +342,7 @@ if (!isset($_SESSION['is-login']) || $_SESSION['is-login'] !== true) {
                                        name="number" 
                                        class="form-control" 
                                        id="phoneInput" 
-                                       placeholder="Phone Number"
-                                       value="<?php echo isset($_SESSION['old-number']) ? htmlspecialchars($_SESSION['old-number']) : ''; ?>">
+                                       placeholder="Phone Number">
                                 <label for="phoneInput">
                                     <i class="ri-smartphone-line me-2"></i>Phone Number
                                 </label>
@@ -359,8 +350,7 @@ if (!isset($_SESSION['is-login']) || $_SESSION['is-login'] !== true) {
                                     <div class="alert-custom">
                                         <i class="ri-error-warning-line me-2"></i>
                                         <?php echo htmlspecialchars($_SESSION['phone-error']); 
-                                        unset($_SESSION['phone_error']);
-                                        unset($_SESSION['old-number']); ?>
+                                        unset($_SESSION['phone_error']);?>
                                     </div>
                                 <?php } ?>
                             </div>
@@ -372,16 +362,14 @@ if (!isset($_SESSION['is-login']) || $_SESSION['is-login'] !== true) {
                                 </label>
                                 <div class="gender-options">
                                     <div class="gender-option">
-                                        <input type="radio" name="gender" id="genderMale" value="Male" 
-                                            <?php echo (isset($_SESSION['old-gender']) && $_SESSION['old-gender'] == 'Male') ? 'checked' : ''; ?>>
+                                        <input type="radio" name="gender" id="genderMale" value="Male">
                                         <label for="genderMale">
                                             <i class="ri-men-line"></i>
                                             <span>Male</span>
                                         </label>
                                     </div>
                                     <div class="gender-option">
-                                        <input type="radio" name="gender" id="genderFemale" value="Female" 
-                                            <?php echo (isset($_SESSION['old-gender']) && $_SESSION['old-gender'] == 'Female') ? 'checked' : ''; ?>>
+                                        <input type="radio" name="gender" id="genderFemale" value="Female">
                                         <label for="genderFemale">
                                             <i class="ri-women-line"></i>
                                             <span>Female</span>
@@ -418,7 +406,7 @@ if (!isset($_SESSION['is-login']) || $_SESSION['is-login'] !== true) {
                 
                 <!-- Navigation Links -->
                 <div class="text-center mt-4">
-                    <a href="./index.php" class="btn btn-link text-secondary text-decoration-none">
+                    <a href="./students.php" class="btn btn-link text-secondary text-decoration-none">
                         <i class="ri-dashboard-line me-1"></i> Dashboard
                     </a>
                     <span class="text-secondary mx-2">•</span>

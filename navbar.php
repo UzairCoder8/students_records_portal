@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
     <div class="container">
-        <a class="navbar-brand fw-bold fs-3 d-flex align-items-center gap-2" href="#">
+        <a class="navbar-brand fw-bold fs-3 d-flex align-items-center gap-2" href="./index.php">
             <i class="ri-graduation-cap-fill fs-3"></i>
             EduCollect
         </a>
@@ -10,13 +10,18 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center gap-1" href="./student.php">
-                        <i class="ri-user-add-line"></i> New Admission</a>
+                    <a class="nav-link d-flex align-items-center gap-1" href="./index.php">
+                        <i class="ri-user-add-line"></i>Home</a>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center gap-1" href="./index.php">
-                        <i class="ri-file-list-3-line"></i> Check Record</a>
+                    <a class="nav-link d-flex align-items-center gap-1" href="./students.php">
+                        <i class="ri-file-list-3-line"></i>Students</a>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center gap-1" href="./add.php">
+                        <i class="ri-user-add-line"></i>Add</a>
                     </a>
                 </li>
                 <li class="nav-item">

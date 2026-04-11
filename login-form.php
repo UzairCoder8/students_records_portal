@@ -97,6 +97,10 @@ session_start();
                             <?php } ?>
                         </div>
 
+                        <?php if (isset($_SESSION['notregister-error']) && !empty($_SESSION['notregister-error'])) { ?>
+                            <div class="alert alert-danger my-1"> <?php echo $_SESSION['notregister-error'];
+                                                                    unset($_SESSION['notregister-error']) ?> </div>
+                        <?php } ?>
 
                         <button type="submit" class="btn btn-primary btn-interactive w-100 rounded-pill">
                             LOGIN <i class="ri-arrow-right-line ms-2"></i>

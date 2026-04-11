@@ -9,30 +9,47 @@ if ( !isset($_SESSION['is-login']) || $_SESSION['is-login'] !== true) {
 
 include "./connection.php";
 
-// --- SIMPLE QUERIES FOR DASHBOARD STATS (BEGINNER FRIENDLY) ---
+// --- FILTER AND SEARCH LOGIC ---
+$search = isset($_GET['search']) ? mysqli_real_escape_string($con, $_GET['search']) : '';
+$gender_filter = isset($_GET['gender']) ? mysqli_real_escape_string($con, $_GET['gender']) : '';
 
-// 1. Get total students (no change needed for counting)
-$result_total = mysqli_query($con, "SELECT * FROM studdata");
-$total_students = mysqli_num_rows($result_total);
+// Build the WHERE clause based on filters
+$where_clauses = [];
 
-// 2. Get male students count (order doesn't matter for counting)
+if (!empty($search)) {
+    $where_clauses[] = "(name LIKE '%$search%' OR email LIKE '%$search%' OR phone LIKE '%$search%')";
+}
+
+if (!empty($gender_filter) && ($gender_filter == 'male' || $gender_filter == 'female')) {
+    $where_clauses[] = "gender = '$gender_filter'";
+}
+
+$where_sql = "";
+if (count($where_clauses) > 0) {
+    $where_sql = "WHERE " . implode(" AND ", $where_clauses);
+}
+
+// Get filtered students count
+$count_query = "SELECT COUNT(*) as total FROM studdata $where_sql";
+$count_result = mysqli_query($con, $count_query);
+$total_filtered = mysqli_fetch_assoc($count_result)['total'];
+
+// Get filtered students data
+$query = "SELECT * FROM studdata $where_sql ORDER BY id ASC";
+$result = mysqli_query($con, $query);
+
+// Get statistics for cards (unfiltered)
+$result_total_all = mysqli_query($con, "SELECT * FROM studdata");
+$total_students_all = mysqli_num_rows($result_total_all);
+
 $result_male = mysqli_query($con, "SELECT * FROM studdata WHERE gender = 'male'");
 $total_students_m = mysqli_num_rows($result_male);
 
-// 3. Get female students count
 $result_female = mysqli_query($con, "SELECT * FROM studdata WHERE gender = 'female'");
 $total_students_f = mysqli_num_rows($result_female);
 
-// 4. Get users count
 $result_users = mysqli_query($con, "SELECT * FROM users");
-if ($result_users) {
-    $total_users = mysqli_num_rows($result_users);
-} else {
-    $total_users = 0;
-}
-
-// 5. Get all students for table display - ORDER BY id ASC (oldest first, newest at bottom)
-$result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id ASC");
+$total_users = $result_users ? mysqli_num_rows($result_users) : 0;
 
 ?>
 
@@ -41,7 +58,7 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Student Record Management Dashboard</title>
+    <title>Students Page - Search & Filter</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -49,7 +66,7 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
     <!-- Remix Icon -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css" rel="stylesheet">
     
-    <!-- Bootstrap Icons (for cards) -->
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <style>
@@ -198,12 +215,72 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
             border-radius: 50%;
         }
         
-        .year-badge {
-            background: rgba(79, 70, 229, 0.2);
-            border: 1px solid var(--gradient-1);
-            border-radius: 30px;
-            padding: 8px 18px;
-            backdrop-filter: blur(10px);
+        /* Filter Section */
+        .filter-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .search-input {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 12px;
+            padding: 12px 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            background: var(--bg-dark);
+            border-color: var(--gradient-1);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+            outline: none;
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+        
+        .filter-btn {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 12px;
+            padding: 12px 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .filter-btn:hover {
+            background: var(--gradient-1);
+            border-color: var(--gradient-1);
+            transform: translateY(-2px);
+        }
+        
+        .filter-btn.active {
+            background: var(--gradient-1);
+            border-color: var(--gradient-1);
+        }
+        
+        .reset-btn {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 12px;
+            padding: 12px 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .reset-btn:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+            color: white;
+            transform: translateY(-2px);
         }
         
         /* Table Styles */
@@ -292,10 +369,6 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
             color: white;
         }
         
-        .btn-danger:hover, .btn-warning:hover {
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        
         /* Empty State */
         .empty-state {
             padding: 60px 20px;
@@ -330,7 +403,7 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
             }
         }
         
-        .stat-card, .welcome-banner, .table-container {
+        .stat-card, .welcome-banner, .filter-section, .table-container {
             animation: fadeInUp 0.6s ease-out;
         }
         
@@ -351,9 +424,9 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
                 font-size: 11px;
             }
             
-            .table thead th, .table tbody td {
-                padding: 10px;
-                font-size: 13px;
+            .filter-btn, .reset-btn {
+                padding: 8px 16px;
+                font-size: 14px;
             }
         }
         
@@ -371,17 +444,18 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
             color: var(--gradient-1) !important;
         }
         
-        /* Alert customization */
-        .alert {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
+        /* Result count badge */
+        .result-badge {
+            background: var(--gradient-1);
+            border-radius: 30px;
+            padding: 5px 15px;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
+    <!-- Navbar (same as previous) -->
     <div class="container">
         <?php require "./navbar.php"; ?>
     </div>
@@ -389,39 +463,37 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
     <!-- Main Content -->
     <div class="container mt-4 mb-5">
         
-        <!-- Welcome Message -->
+        <!-- Welcome Banner -->
         <div class="welcome-banner">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <div>
                     <h3 class="mb-2">
-                        <i class="ri-dashboard-line me-2" style="color: var(--gradient-1);"></i>
-                        Ticer Students Dashboard
+                        <i class="ri-user-search-line me-2" style="color: var(--gradient-1);"></i>
+                        Manage Students
                     </h3>
-                    <p class="mb-0 text-secondary">Welcome back! Here's what's happening with your students today.</p>
+                    <p class="mb-0 text-secondary">Search, filter, and manage all your student records in one place.</p>
                 </div>
-                <div class="year-badge">
-                    <i class="ri-calendar-line me-1"></i>
-                    <span>2026 Academic Year</span>
+                <div class="result-badge">
+                    <i class="ri-database-2-line me-1"></i>
+                    <span><?php echo $total_filtered; ?> of <?php echo $total_students_all; ?> students</span>
                 </div>
             </div>
         </div>
         
         <!-- Statistics Cards Row -->
         <div class="row mb-4">
-            <!-- Card 1: Total Students -->
             <div class="col-md-3 col-sm-6">
                 <div class="stat-card d-flex align-items-center gap-3">
                     <div class="stat-icon bg-blue-light">
                         <i class="bi bi-people-fill"></i>
                     </div>
                     <div>
-                        <p class="stat-number"><?php echo $total_students; ?></p>
+                        <p class="stat-number"><?php echo $total_students_all; ?></p>
                         <p class="stat-label">Total Students</p>
                     </div>
                 </div>
             </div>
             
-            <!-- Card 2: Male Students -->
             <div class="col-md-3 col-sm-6">
                 <div class="stat-card d-flex align-items-center gap-3">
                     <div class="stat-icon bg-green-light">
@@ -434,7 +506,6 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
                 </div>
             </div>
             
-            <!-- Card 3: Female Students -->
             <div class="col-md-3 col-sm-6">
                 <div class="stat-card d-flex align-items-center gap-3">
                     <div class="stat-icon bg-purple-light">
@@ -447,18 +518,58 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
                 </div>
             </div>
             
-            <!-- Card 4: Users -->
             <div class="col-md-3 col-sm-6">
                 <div class="stat-card d-flex align-items-center gap-3">
                     <div class="stat-icon bg-dark-light">
-                        <i class="bi bi-person-badge"></i>
+                        <i class="bi bi-funnel-fill"></i>
                     </div>
                     <div>
-                        <p class="stat-number"><?php echo $total_users; ?></p>
-                        <p class="stat-label">System Users</p>
+                        <p class="stat-number"><?php echo $total_filtered; ?></p>
+                        <p class="stat-label">Filtered Results</p>
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <form method="GET" class="row g-3 align-items-end">
+                <!-- Search Input -->
+                <div class="col-md-5">
+                    <label class="form-label text-secondary mb-2">
+                        <i class="ri-search-line me-1"></i> Search Students
+                    </label>
+                    <input type="text" 
+                           name="search" 
+                           class="form-control search-input" 
+                           placeholder="Search by name, email, or phone..."
+                           value="<?php echo htmlspecialchars($search); ?>">
+                </div>
+                
+                <!-- Gender Filter -->
+                <div class="col-md-4">
+                    <label class="form-label text-secondary mb-2">
+                        <i class="ri-gender-line me-1"></i> Filter by Gender
+                    </label>
+                    <select name="gender" class="form-select search-input">
+                        <option value="">All Genders</option>
+                        <option value="male" <?php echo $gender_filter == 'male' ? 'selected' : ''; ?>>Male</option>
+                        <option value="female" <?php echo $gender_filter == 'female' ? 'selected' : ''; ?>>Female</option>
+                    </select>
+                </div>
+                
+                <!-- Buttons -->
+                <div class="col-md-3">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="filter-btn flex-grow-1">
+                            <i class="ri-filter-3-line me-1"></i> Apply Filters
+                        </button>
+                        <a href="students.php" class="reset-btn">
+                            <i class="ri-refresh-line me-1"></i> Reset
+                        </a>
+                    </div>
+                </div>
+            </form>
         </div>
         
         <!-- Student Records Table -->
@@ -468,10 +579,12 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
                     <i class="ri-graduation-cap-line me-2"></i>
                     Student Records
                 </h5>
-                <span class="badge" style="background: var(--gradient-1); padding: 8px 16px;">
-                    <i class="ri-database-2-line me-1"></i> 
-                    <?php echo $total_students; ?> Total Records
-                </span>
+                <?php if(!empty($search) || !empty($gender_filter)): ?>
+                    <span class="badge" style="background: var(--warning); padding: 6px 12px;">
+                        <i class="ri-filter-3-line me-1"></i> 
+                        Filters Applied
+                    </span>
+                <?php endif; ?>
             </div>
             
             <div class="table-responsive">
@@ -483,13 +596,14 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
                             <th><i class="ri-mail-line me-1"></i> Email</th>
                             <th><i class="ri-phone-line me-1"></i> Phone</th>
                             <th><i class="ri-gender-line me-1"></i> Gender</th>
+                            <th class="text-center"><i class="ri-settings-4-line me-1"></i> Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php 
                         $sr_no = 1;
-                        if(mysqli_num_rows($result_all_students) > 0) {
-                            while($student = mysqli_fetch_assoc($result_all_students)) {
+                        if(mysqli_num_rows($result) > 0) {
+                            while($student = mysqli_fetch_assoc($result)) {
                                 $gender_class = ($student['gender'] == 'male') ? 'gender-male' : 'gender-female';
                                 $gender_icon = ($student['gender'] == 'male') ? 'ri-men-line' : 'ri-women-line';
                         ?>
@@ -513,6 +627,17 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
                                         <?php echo ucfirst($student['gender']); ?>
                                     </span>
                                 </td>
+                                <td class="text-center">
+                                    <a href="./delete.php?id=<?php echo $student['id']; ?>" 
+                                       class="btn btn-danger btn-action" 
+                                       onclick="return confirm('⚠️ Are you sure you want to delete this student? This action cannot be undone.')">
+                                        <i class="ri-delete-bin-6-line"></i> Delete
+                                    </a>
+                                    <a href="./update-form.php?id=<?php echo $student['id']; ?>" 
+                                       class="btn btn-warning btn-action">
+                                        <i class="ri-edit-line"></i> Edit
+                                    </a>
+                                </td>
                             </tr>
                         <?php 
                             }
@@ -520,9 +645,15 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
                         ?>
                             <tr>
                                 <td colspan="6" class="empty-state">
-                                    <i class="ri-inbox-line"></i>
+                                    <i class="ri-user-search-line"></i>
                                     <h5 class="mt-3">No Students Found</h5>
-                                    <p class="text-secondary mb-0">Click on "Add Student" in the navbar to get started.</p>
+                                    <p class="text-secondary mb-0">
+                                        <?php if(!empty($search) || !empty($gender_filter)): ?>
+                                            Try adjusting your search or filter criteria.
+                                        <?php else: ?>
+                                            Click on "Add Student" in the navbar to get started.
+                                        <?php endif; ?>
+                                    </p>
                                 </td>
                             </tr>
                         <?php } ?>
@@ -533,7 +664,10 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
             <div class="table-footer d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div>
                     <i class="ri-information-line me-1"></i>
-                    Showing <strong><?php echo $total_students; ?></strong> student record(s)
+                    Showing <strong><?php echo $total_filtered; ?></strong> student record(s)
+                    <?php if(!empty($search)): ?>
+                        matching "<strong><?php echo htmlspecialchars($search); ?></strong>"
+                    <?php endif; ?>
                 </div>
                 <div>
                     <i class="ri-time-line me-1"></i>
@@ -544,13 +678,12 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
         
     </div>
 
-    <!-- Bootstrap JS (kept as requested) -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Optional: Add a simple console log for fun -->
     <script>
-        console.log("%c✨ Ticer Dashboard Loaded Successfully! ✨", "color: #4f46e5; font-size: 16px; font-weight: bold;");
-        console.log("%cDashboard Statistics: Total Students = <?php echo $total_students; ?>, Male = <?php echo $total_students_m; ?>, Female = <?php echo $total_students_f; ?>", "color: #10b981; font-size: 12px;");
+        console.log("%c✨ Students Page with Search & Filter Loaded! ✨", "color: #4f46e5; font-size: 16px; font-weight: bold;");
+        console.log("%cFilters: Search='<?php echo addslashes($search); ?>', Gender='<?php echo $gender_filter; ?>'", "color: #10b981; font-size: 12px;");
     </script>
     
 </body>

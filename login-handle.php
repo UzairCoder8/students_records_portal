@@ -1,8 +1,8 @@
 <?php session_start();
 
-echo "<pre>";
-print_r($_POST);
-echo "</pre>";
+// echo "<pre>";
+// print_r($_POST);
+// echo "</pre>";
 // exit;
 
 
@@ -25,6 +25,7 @@ if (!isset($password) || empty($password)) {
 }
 
 
+
 // 1. check user is registered or not
 $usr_qry = " SELECT * FROM users WHERE username='$username' ";
 $usr_result = mysqli_query($con, $usr_qry);
@@ -34,11 +35,13 @@ if (mysqli_num_rows($usr_result) == 0) {
     exit;
 }
 
+
+
 // 2.  get registerd user
 $usr = mysqli_fetch_assoc($usr_result);
 
 // 3. verify password is correct
-if (password_verify($password, $usr['password' === true])) {
+if (password_verify($password, $usr['password'])) {
     $_SESSION['is-login'] = true;
     $_SESSION['name'] = $usr['name'];
     header("Location: index.php");
