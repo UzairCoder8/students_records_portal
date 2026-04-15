@@ -11,11 +11,11 @@ include "./connection.php";
 
 // --- SIMPLE QUERIES FOR DASHBOARD STATS (BEGINNER FRIENDLY) ---
 
-// 1. Get total students (no change needed for counting)
+// 1. Get total students
 $result_total = mysqli_query($con, "SELECT * FROM studdata");
 $total_students = mysqli_num_rows($result_total);
 
-// 2. Get male students count (order doesn't matter for counting)
+// 2. Get male students count
 $result_male = mysqli_query($con, "SELECT * FROM studdata WHERE gender = 'male'");
 $total_students_m = mysqli_num_rows($result_male);
 
@@ -41,7 +41,7 @@ $result_all_students = mysqli_query($con, "SELECT * FROM studdata ORDER BY id AS
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Student Record Management Dashboard</title>
+    <title>Student Records</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
